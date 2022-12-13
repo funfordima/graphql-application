@@ -19,6 +19,7 @@ import withHocs from './DirectorsTableHoc.js';
 interface DirectorsTableProps {
   onOpen: (data: any) => void;
   classes: any;
+  data: any;
 };
 
 interface DirectorModel {
@@ -27,11 +28,6 @@ interface DirectorModel {
   age: number;
   movies: { name: string }[];
 };
-
-const directors: DirectorModel[] = [
-  { id: 1, name: 'Quentin Tarantino', age: 55, movies: [{ name: 'Movie 1' }, { name: 'Movie 2' }] },
-  { id: 2, name: 'Guy Ritchie', age: 50, movies: [{ name: 'Movie 1' }, { name: 'Movie 2' }] }
-];
 
 class DirectorsTable extends React.Component<DirectorsTableProps> {
   state = {
@@ -64,7 +60,8 @@ class DirectorsTable extends React.Component<DirectorsTableProps> {
 
   render() {
     const { anchorEl, openDialog, data: activeElem = {} as any } = this.state;
-    const { classes } = this.props;
+    const { classes, data = {} } = this.props;
+    const { directors = [] } = data;
 
     return (
       <>
@@ -80,7 +77,7 @@ class DirectorsTable extends React.Component<DirectorsTableProps> {
               </TableRow>
             </TableHead>
             <TableBody>
-              {directors.map(director => {
+              {(directors as DirectorModel[]).map(director => {
                 return (
                   <TableRow key={director.id}>
                     <TableCell component="th" scope="row">{director.name}</TableCell>

@@ -32,11 +32,6 @@ interface MovieModel {
   director: { name: string };
 }
 
-const movies: MovieModel[] = [
-  { id: 1, name: 'Pulp Fiction', genre: 'Crime', rate: 10, director: { name: 'Quentin Tarantino' }, watched: true },
-  { id: 2, name: 'Lock, Stock and Two Smoking Barrels', genre: 'Crime-comedy', rate: 9, director: { name: 'Guy Ritchie' }, watched: false },
-];
-
 class MoviesTable extends React.Component<MoviesTableProps> {
   state = {
     anchorEl: null,
@@ -69,9 +64,11 @@ class MoviesTable extends React.Component<MoviesTableProps> {
   render() {
     const { anchorEl, openDialog, data: activeElem = {} as MovieModel } = this.state;
 
-    const { classes } = this.props;
+    const { classes, data = {} } = this.props;
 
-    console.log(this.props);
+    const { movies = [] } = data;
+
+    console.log(this.props.data);
 
     return (
       <>
@@ -89,7 +86,7 @@ class MoviesTable extends React.Component<MoviesTableProps> {
               </TableRow>
             </TableHead>
             <TableBody>
-              {movies.map(movie => {
+              {(movies as MovieModel[]).map(movie => {
                 return (
                   <TableRow key={movie.id}>
                     <TableCell component="th" scope="row">{movie.name}</TableCell>
