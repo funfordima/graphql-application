@@ -16,6 +16,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import MoviesDialog from '../MoviesDialog/MoviesDialog';
 
 import withHocs from './MoviesTableHoc.js';
+import MoviesSearch from '../MoviesSearch/MoviesSearch';
 
 interface MoviesTableProps {
   classes: any;
@@ -37,6 +38,7 @@ class MoviesTable extends React.Component<MoviesTableProps> {
     anchorEl: null,
     openDialog: false,
     data: {} as MovieModel,
+    name: '',
   };
 
   handleDialogOpen = () => { this.setState({ openDialog: true }); };
@@ -56,13 +58,29 @@ class MoviesTable extends React.Component<MoviesTableProps> {
     this.handleClose();
   };
 
+  handleChange = (name: string) => (event: any) => {
+    this.setState({ [name]: event.target.value });
+  };
+
   handleDelete = () => {
     this.handleDialogOpen();
     this.handleClose();
   };
 
+  handleSearch = (event: any) => {
+    const { data } = this.props;
+    const { name } = this.state;
+
+    if (event.charCode === 13) {
+      data.fetchMore({
+        variables: { name },
+        updateQuery: (_: any, { fetchMoreResult }: any) => fetchMoreResult,
+      });
+    }
+  };
+
   render() {
-    const { anchorEl, openDialog, data: activeElem = {} as MovieModel } = this.state;
+    const { anchorEl, openDialog, data: activeElem = {} as MovieModel, name } = this.state;
 
     const { classes, data = {} } = this.props;
 
@@ -72,6 +90,9 @@ class MoviesTable extends React.Component<MoviesTableProps> {
 
     return (
       <>
+        <Paper>
+          <MoviesSearch name={name} handleChange={this.handleChange} handleSearch={this.handleSearch} />
+        </Paper>
         <MoviesDialog open={openDialog} handleClose={this.handleDialogClose} id={activeElem.id} />
         <Paper className={classes.root}>
           <Table>

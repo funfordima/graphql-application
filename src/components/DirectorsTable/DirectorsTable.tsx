@@ -15,6 +15,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import DirectorsDialog from '../DirectorsDialog/DirectorsDialog';
 
 import withHocs from './DirectorsTableHoc.js';
+import DirectorsSearch from '../DirectorsSearch/DirectorsSearch';
 
 interface DirectorsTableProps {
   onOpen: (data: any) => void;
@@ -34,6 +35,7 @@ class DirectorsTable extends React.Component<DirectorsTableProps> {
     anchorEl: null,
     openDialog: false,
     data: {} as DirectorModel,
+    name: '',
   };
 
   handleDialogOpen = () => { this.setState({ openDialog: true }); };
@@ -53,18 +55,37 @@ class DirectorsTable extends React.Component<DirectorsTableProps> {
     this.handleClose();
   };
 
+  handleChange = (name: string) => (event: any) => {
+    this.setState({ [name]: event.target.value });
+  };
+
+  handleSearch = (event: any) => {
+    const { data } = this.props;
+    const { name } = this.state;
+
+    if (event.charCode === 13) {
+      data.fetchMore({
+        variables: { name },
+        updateQuery: (_: any, { fetchMoreResult }: any) => fetchMoreResult,
+      });
+    }
+  };
+
   handleDelete = () => {
     this.handleDialogOpen();
     this.handleClose();
   };
 
   render() {
-    const { anchorEl, openDialog, data: activeElem = {} as any } = this.state;
+    const { anchorEl, openDialog, data: activeElem = {} as any, name } = this.state;
     const { classes, data = {} } = this.props;
     const { directors = [] } = data;
 
     return (
       <>
+        <Paper>
+          <DirectorsSearch name={name} handleChange={this.handleChange} handleSearch={this.handleSearch} />
+        </Paper>
         <DirectorsDialog open={openDialog} handleClose={this.handleDialogClose} id={activeElem?.id} />
         <Paper className={classes.root}>
           <Table>

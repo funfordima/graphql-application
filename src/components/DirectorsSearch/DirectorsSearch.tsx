@@ -6,12 +6,15 @@ import withHocs from './DirectorsSearchHoc.js';
 
 interface DirectorsSearchProps {
   classes: any;
+  handleChange: any;
+  handleSearch: any;
+  name: any;
 }
 
 class DirectorsSearch extends React.Component<DirectorsSearchProps> {
 
   render() {
-    const { classes } = this.props;
+    const { classes, handleChange, handleSearch, name } = this.props;
 
     return (
       <div className={classes.search}>
@@ -19,6 +22,9 @@ class DirectorsSearch extends React.Component<DirectorsSearchProps> {
           <SearchIcon />
         </div>
         <InputBase
+          onChange={handleChange('name')}
+          onKeyPress={(e) => handleSearch(e)}
+          value={name}
           placeholder="Search…"
           classes={{
             root: classes.inputRoot,

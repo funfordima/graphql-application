@@ -18,6 +18,9 @@ interface MoviesFormProps {
   selectedValue: DirectorModel;
   open: boolean;
   classes: any;
+  data: any;
+  addMovie: any;
+  updateMovie: any;
   onClose: () => void;
   handleCheckboxChange: (param: string) => undefined;
   handleSelectChange: () => void;
@@ -35,11 +38,6 @@ interface DirectorModel {
   watched?: boolean;
 }
 
-const directors: DirectorModel[] = [
-  { id: 1, name: 'Quentin Tarantino', age: 55, movies: [{ name: 'Movie 1' }, { name: 'Movie 2' }] },
-  { id: 2, name: 'Guy Ritchie', age: 50, movies: [{ name: 'Movie 1' }, { name: 'Movie 2' }] }
-];
-
 class MoviesForm extends React.Component<MoviesFormProps> {
   InputLabelRef: any;
 
@@ -48,14 +46,18 @@ class MoviesForm extends React.Component<MoviesFormProps> {
   };
 
   handleSave = () => {
-    const { selectedValue, onClose } = this.props;
+    const { selectedValue, onClose, addMovie, updateMovie } = this.props;
     const { id, name, genre, rate, directorId, watched } = selectedValue;
+    id ?
+      updateMovie({ id, name, genre, rate: Number(rate), directorId, watched: Boolean(watched) }) :
+      addMovie({ name, genre, rate: Number(rate), directorId, watched: Boolean(watched) });
     onClose();
   };
 
   render() {
-    const { classes, open, handleChange, handleSelectChange, handleCheckboxChange, selectedValue = {} as DirectorModel } = this.props;
+    const { data = {}, classes, open, handleChange, handleSelectChange, handleCheckboxChange, selectedValue = {} as DirectorModel } = this.props;
     const { name, genre, rate, directorId, watched } = selectedValue;
+    const { directors = [] } = data;
 
     return (
       <Dialog onClose={this.handleClose} open={open} aria-labelledby="simple-dialog-title">
@@ -101,7 +103,7 @@ class MoviesForm extends React.Component<MoviesFormProps> {
               onChange={handleSelectChange}
               input={<OutlinedInput name="directorId" id="outlined-director" labelWidth={57} />}
             >
-              {directors.map(director => <MenuItem key={director.id} value={director.id}>{director.name}</MenuItem>)}
+              {(directors as DirectorModel[]).map(director => <MenuItem key={director.id} value={director.id}>{director.name}</MenuItem>)}
             </Select>
           </FormControl>
           <div className={classes.wrapper}>

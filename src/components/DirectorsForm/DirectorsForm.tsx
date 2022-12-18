@@ -20,14 +20,17 @@ interface DirectorsFormProps {
   handleChange: (name: string) => undefined;
   open: boolean;
   classes: any;
+  addDirector: any;
+  updateDirector: any;
 }
 
 class DirectorsForm extends React.Component<DirectorsFormProps> {
   handleClose = () => { this.props.onClose(); };
 
   handleSave = () => {
-    const { selectedValue, onClose } = this.props;
+    const { selectedValue, onClose, addDirector, updateDirector } = this.props;
     const { id, name, age } = selectedValue;
+    id ? updateDirector({ name, age: Number(age), id }) : addDirector({ name, age: Number(age) });
     onClose();
   };
 
